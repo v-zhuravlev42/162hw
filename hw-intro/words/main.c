@@ -46,6 +46,25 @@ WordCount *word_counts = NULL;
  */
 int num_words(FILE* infile) {
   int num_words = 0;
+  int temp = 0;
+
+  while (true) {
+    int c = getc(infile);
+
+    if (isalpha(c)) {
+      temp++;
+    } else {
+     if (temp > 1) {
+      num_words++;
+     }
+
+      temp = 0;
+    }
+
+    if (c == EOF) {
+      break;
+    }
+  }
 
   return num_words;
 }
@@ -62,6 +81,9 @@ int num_words(FILE* infile) {
  * and 0 otherwise.
  */
 int count_words(WordCount **wclist, FILE *infile) {
+  (void)wclist;
+  (void)infile;
+
   return 0;
 }
 
@@ -133,10 +155,33 @@ int main (int argc, char *argv[]) {
   if ((argc - optind) < 1) {
     // No input file specified, instead, read from STDIN instead.
     infile = stdin;
+
+    if (infile == NULL) {
+      fprintf(stderr, "No arguments.\n");
+      return 1;
+    }
+
+    total_words = num_words(infile);
   } else {
     // At least one file specified. Useful functions: fopen(), fclose().
     // The first file can be found at argv[optind]. The last file can be
     // found at argv[argc-1].
+
+    // optind - argc
+
+    // since argv[argc-1] is the last file we can open files until we reach last one
+
+    for (int i = optind; i < argc; i++) {
+      FILE *file = fopen(argv[i], "r");
+      if (file == NULL) {
+        fprintf(stderr, "File does not exist.\n");
+        return 1;
+      }
+
+      total_words += num_words(file);
+
+      fclose(file);
+    }
   }
 
   if (count_mode) {
