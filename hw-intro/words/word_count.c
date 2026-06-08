@@ -69,7 +69,6 @@ ssize_t len_words(WordCount *wchead) {
 }
 
 WordCount *find_word(WordCount *wchead, char *word) {
-  /* Return count for word, if it exists */
   WordCount *wc = NULL;
 
   while (wchead != NULL) {
@@ -89,7 +88,33 @@ int add_word(WordCount **wclist, char *word) {
      Returns 0 if no errors are encountered in the body of this function; 1 otherwise.
   */
 
-  // don't forget to add toLower
+  char* str = new_string(word);
+  size_t len = strlen(str);
+  for (int i = 0; i < len; i++) {
+    str[i] = (char)tolower((unsigned char)str[i]);
+  }
+
+  WordCount* wcCopy = *wclist;
+
+  while (wcCopy != NULL) {
+    if (strcmp(wcCopy->word, str) == 0) {
+      wcCopy->count++;
+      break;
+    }  else if (wcCopy->next == NULL) {
+      WordCount *newNode = (WordCount *) malloc(sizeof(WordCount));
+      if (newNode == NULL) {
+        return 1;
+      }
+
+      newNode->count = 1;
+      newNode->word = str;
+      newNode->next = NULL;
+
+      wcCopy->next = newNode;
+      break;
+    }
+  }
+
  return 0;
 }
 
