@@ -85,8 +85,32 @@ int num_words(FILE* infile) {
  * and 0 otherwise.
  */
 int count_words(WordCount **wclist, FILE *infile) {
-  (void)wclist;
-  (void)infile;
+  if (infile == NULL) {
+    return 1;
+  }
+
+  char wordBuff[MAX_WORD_LEN];
+
+  int temp = 0;
+  while (true) {
+    int c = getc(infile);
+
+    if (isalpha(c)) {
+      wordBuff[temp] = (char)c;
+      temp++;
+    } else {
+      if (temp > 1) {
+        wordBuff[temp] = '\0';
+        add_word(wclist, &wordBuff[0]);
+      }
+
+      temp = 0;
+    }
+
+    if (c == EOF) {
+      break;
+    }
+  }
 
   return 0;
 }
@@ -182,6 +206,8 @@ int main (int argc, char *argv[]) {
     }
 
     total_words = num_words(infile);
+    rewind(infile);
+    count_words(&word_counts, infile);
   } else {
     // At least one file specified. Useful functions: fopen(), fclose().
     // The first file can be found at argv[optind]. The last file can be
@@ -199,6 +225,8 @@ int main (int argc, char *argv[]) {
       }
 
       total_words += num_words(file);
+      rewind(file);
+      count_words(&word_counts, file);
 
       fclose(file);
     }

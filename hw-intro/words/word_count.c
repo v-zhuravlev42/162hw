@@ -112,6 +112,8 @@ int add_word(WordCount **wclist, char *word) {
 
       wcCopy->next = newNode;
       break;
+    } else {
+      wcCopy = wcCopy->next;
     }
   }
 
@@ -122,6 +124,8 @@ void fprint_words(WordCount *wchead, FILE *ofile) {
   /* print word counts to a file */
   WordCount *wc;
   for (wc = wchead; wc; wc = wc->next) {
+    if (wc->count != 0) {
     fprintf(ofile, "%i\t%s\n", wc->count, wc->word);
+    }
   }
 }
