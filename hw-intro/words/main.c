@@ -46,28 +46,29 @@ WordCount *word_counts = NULL;
  */
 int num_words(FILE* infile) {
   if (infile == NULL) {
-    return 1;
+    return -1;
   }
 
   int num_words = 0;
   int temp = 0;
 
-  while (true) {
-    int c = getc(infile);
+  int c = getc(infile);
+  while (c != EOF) {
+    if (temp > MAX_WORD_LEN) {
+      return -1;
+    }
 
     if (isalpha(c)) {
       temp++;
     } else {
-     if (temp > 1) {
-      num_words++;
-     }
+      if (temp > 1) {
+        num_words++;
+      }
 
       temp = 0;
     }
 
-    if (c == EOF) {
-      break;
-    }
+    c = getc(infile);
   }
 
   return num_words;

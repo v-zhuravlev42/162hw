@@ -99,9 +99,10 @@ int add_word(WordCount **wclist, char *word) {
   while (wcCopy != NULL) {
     if (strcmp(wcCopy->word, str) == 0) {
       wcCopy->count++;
+      free(str);
       break;
     }  else if (wcCopy->next == NULL) {
-      WordCount *newNode = (WordCount *) malloc(sizeof(WordCount));
+      WordCount *newNode = malloc(sizeof(WordCount));
       if (newNode == NULL) {
         return 1;
       }
